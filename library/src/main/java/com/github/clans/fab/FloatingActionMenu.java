@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,6 +104,7 @@ public class FloatingActionMenu extends ViewGroup {
     private Context mLabelsContext;
     private String mMenuLabelText;
     private boolean mUsingMenuLabel;
+    private boolean mEnableMenuIconAnimation;
 
     public interface OnMenuToggleListener {
         void onMenuToggle(boolean opened);
@@ -186,6 +186,8 @@ public class FloatingActionMenu extends ViewGroup {
             initPadding(padding);
         }
 
+        mEnableMenuIconAnimation = attr.getBoolean(R.styleable.FloatingActionMenu_menu_fab_enable_default_icon_animation, true);
+
         mOpenInterpolator = new OvershootInterpolator();
         mCloseInterpolator = new AnticipateInterpolator();
         mLabelsContext = new ContextThemeWrapper(getContext(), mLabelsStyle);
@@ -266,7 +268,7 @@ public class FloatingActionMenu extends ViewGroup {
         addView(mMenuButton, super.generateDefaultLayoutParams());
         addView(mImageToggle);
 
-        createDefaultIconAnimation();
+        if (mEnableMenuIconAnimation) createDefaultIconAnimation();
     }
 
     private void createDefaultIconAnimation() {
@@ -985,7 +987,7 @@ public class FloatingActionMenu extends ViewGroup {
 
     public void removeAllMenuButtons() {
         close(true);
-        
+
         List<FloatingActionButton> viewsToRemove = new ArrayList<>();
         for (int i = 0; i < getChildCount(); i++) {
             View v = getChildAt(i);
